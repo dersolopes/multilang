@@ -42,7 +42,10 @@ public class RuleEngineService {
      * ocorram falhas durante a invocação reflexiva do método.
      */
     public double executeBonusRule(double salario) throws Exception {
-        // Caminho do script (idealmente viria de um arquivo de configuração)
+
+        // TODO - Caminho do script (idealmente viria de um arquivo de configuração)
+        // Ajustar futuramente para que o arquivo seja carregado via 
+        // arquivo de configuracao ou variavel de ambiente
         String filePath = "src/main/groovy/com/anderson/multilang/rules/BonusCalculator.groovy";
         File scriptFile = new File(filePath);
         long lastModified = scriptFile.lastModified();
@@ -70,4 +73,22 @@ public class RuleEngineService {
      * @param timestamp O timestamp (milissegundos) da última modificação do arquivo no momento da carga.
      */
     private static record CachedRule(Class<?> clazz, long timestamp) {}
+
+    /**
+     * Limpa o cache de regras, forçando a recompilação dos scripts na próxima execução.
+     * Útil para cenários onde as regras foram atualizadas e é necessário garantir que a versão mais recente seja utilizada.
+     */
+    public void clearCache() {
+    cache.clear();
+    }
+
+    /**
+    * Retorna o número de regras atualmente armazenadas no cache, útil para monitoramento e depuração.
+    * Nota: Em um cenário real, o cache poderia armazenar múltiplas regras, e este método ajudaria a verificar quantas estão ativas.
+    * @return O tamanho do cache de regras.
+    */
+    public int getCacheSize() {
+    return cache.size();
+    }
+    
 }
